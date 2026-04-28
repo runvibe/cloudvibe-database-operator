@@ -39,7 +39,7 @@ Legenda:
 - [ ] `MVP` Adicionar campo `allowedNamespaces`.
 - [ ] `MVP` Criar `DatabaseInstanceStatus` minimo.
 - [ ] `MVP` Adicionar validacoes OpenAPI para campos obrigatorios.
-- [ ] `MVP` Restringir `engine` inicialmente para `postgres`.
+- [ ] `MVP` Restringir `engine` inicialmente para `aurora-postgres`.
 - [ ] `MVP` Gerar sample `config/samples/database_v1alpha1_databaseinstance.yaml`.
 
 ### 1.2 DatabaseAccess
@@ -134,7 +134,7 @@ Legenda:
 - [ ] `MVP` Criar testes para tamanho e variedade.
 - [ ] `MVP` Garantir que senha nunca aparece em logs.
 
-## 6. PostgreSQL Provisioner
+## 6. Aurora PostgreSQL Provisioner
 
 ### 6.1 Contratos
 
@@ -149,7 +149,7 @@ Legenda:
 - [ ] `MVP` Implementar conexao no database administrativo.
 - [ ] `MVP` Implementar conexao no database alvo.
 - [ ] `MVP` Configurar timeout de conexao.
-- [ ] `MVP` Configurar TLS/SSL mode adequado para RDS.
+- [ ] `MVP` Configurar TLS/SSL mode adequado para Aurora PostgreSQL.
 - [ ] `Later` Suportar CA bundle customizado.
 
 ### 6.3 SQL Seguro
@@ -375,7 +375,7 @@ Legenda:
 
 - [ ] `Later` Suporte a MySQL.
 - [ ] `Later` Suporte a Aurora MySQL.
-- [ ] `Later` Suporte a Aurora PostgreSQL com configuracoes especificas.
+- [ ] `Later` Suporte a RDS PostgreSQL standalone com configuracoes especificas.
 - [ ] `Later` Usuario `migration`.
 - [ ] `Later` Rotacao automatica de senhas.
 - [ ] `Later` Rotacao manual por anotacao.
@@ -405,7 +405,7 @@ Legenda:
 ## Criterio de Pronto do MVP
 
 - O operator instala em um cluster Kubernetes via Helm.
-- Um `DatabaseInstance` define um RDS PostgreSQL alvo.
+- Um `DatabaseInstance` define um cluster Aurora PostgreSQL alvo.
 - Um `DatabaseAccess` cria database, schemas, usuarios e grants.
 - Credenciais sao salvas no AWS Secrets Manager.
 - O `status` do `DatabaseAccess` exibe os ARNs dos secrets.

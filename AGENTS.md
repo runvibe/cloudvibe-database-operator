@@ -4,7 +4,7 @@
 
 Estas instrucoes valem para todo o repositorio `cloudvibe-database-operator`.
 
-O projeto e um Kubernetes Operator para provisionar databases, usuarios, grants e secrets de aplicacoes usando CRDs do grupo `database.cloudvibe.dev`.
+O projeto e um Kubernetes Operator para provisionar databases, usuarios, grants e secrets de aplicacoes em Aurora PostgreSQL usando CRDs do grupo `database.cloudvibe.dev`.
 
 ## Limite maximo de linhas por arquivo
 
@@ -46,7 +46,7 @@ Separar o projeto em camadas simples:
 
 - `src/api/v1alpha1`: tipos Kubernetes e validacoes da API.
 - `src/controller`: reconcilers e integracao com Kubernetes.
-- `src/database/postgres`: provisionamento PostgreSQL com sqlx.
+- `src/database/postgres`: provisionamento Aurora PostgreSQL com sqlx.
 - `src/aws/secretsmanager`: integracao com AWS Secrets Manager.
 - `src/http`: servidor Axum para endpoints operacionais.
 - `src/telemetry`: OpenTelemetry, tracing e metricas.
@@ -61,7 +61,7 @@ Regras:
 - Nao expor senha em `status`, eventos, logs ou erros.
 - Preferir interfaces pequenas nos limites com AWS e banco de dados.
 
-### PostgreSQL
+### Aurora PostgreSQL
 
 - Validar nomes de database, schema e usuario com allowlist antes de montar SQL.
 - Usar quoting seguro para identifiers.
@@ -69,6 +69,7 @@ Regras:
 - Grants devem ser reaplicaveis sem erro.
 - `readonly` e `readwrite` devem ser implementados com testes de permissao reais.
 - Nao rotacionar senha automaticamente quando o secret ja existir, exceto em fluxo explicito de rotacao.
+- Usar endpoint writer do cluster Aurora para provisionamento.
 
 ### AWS Secrets Manager
 

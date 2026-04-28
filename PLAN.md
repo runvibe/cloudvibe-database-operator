@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Criar um Kubernetes Operator para provisionar databases, usuarios, permissoes e credenciais de aplicacoes de forma declarativa, usando recursos Kubernetes e AWS Secrets Manager.
+Criar um Kubernetes Operator para provisionar databases, usuarios, permissoes e credenciais de aplicacoes de forma declarativa, usando Aurora PostgreSQL, recursos Kubernetes e AWS Secrets Manager.
 
 O operador deve permitir que um time de aplicacao declare algo como:
 
@@ -27,7 +27,7 @@ spec:
 
 A partir dessa declaracao, o controller deve:
 
-1. Localizar a instancia RDS/Aurora configurada.
+1. Localizar o cluster Aurora PostgreSQL configurado.
 2. Ler a credencial administrativa no AWS Secrets Manager.
 3. Criar o database caso nao exista.
 4. Criar ou atualizar usuarios por aplicacao.
@@ -52,7 +52,7 @@ O objetivo principal e manter a aplicacao simples: ela nao precisa saber criar u
 - Seguro por padrao: nunca registrar senhas em logs, eventos ou status.
 - Menor privilegio: aplicacoes so acessam os secrets delas.
 - Separacao de responsabilidades: plataforma define instancias; aplicacoes declaram acessos.
-- Evolutivo: comecar com PostgreSQL/RDS e abrir caminho para MySQL, Aurora e outros provedores.
+- Evolutivo: comecar com Aurora PostgreSQL e manter compatibilidade natural com RDS PostgreSQL.
 - GitOps-friendly: funcionar bem com Helm, Argo CD e `kubectl apply`.
 
 ## Arquitetura Proposta
@@ -71,7 +71,7 @@ CloudVibe Database Operator
         |
         +--> le DatabaseInstance
         +--> le admin secret no AWS Secrets Manager
-        +--> conecta no RDS PostgreSQL
+        +--> conecta no Aurora PostgreSQL
         +--> cria database, schemas, roles e grants
         +--> salva credenciais no AWS Secrets Manager
         +--> atualiza status do DatabaseAccess
@@ -108,9 +108,9 @@ kind: DatabaseInstance
 metadata:
   name: prod-main-postgres
 spec:
-  engine: postgres
+  engine: aurora-postgres
   region: us-east-1
-  host: prod-main.xxxxxx.us-east-1.rds.amazonaws.com
+  host: prod-main.cluster-xxxxxx.us-east-1.rds.amazonaws.com
   port: 5432
   adminSecretArn: arn:aws:secretsmanager:us-east-1:123456789012:secret:rds/prod-main/admin-AbCdEf
   secretPrefix: rds/prod-main
@@ -121,9 +121,9 @@ spec:
 
 Campos iniciais:
 
-- `spec.engine`: inicialmente `postgres`.
-- `spec.region`: regiao AWS do RDS e Secrets Manager.
-- `spec.host`: endpoint do RDS/Aurora.
+- `spec.engine`: inicialmente `aurora-postgres`.
+- `spec.region`: regiao AWS do Aurora e Secrets Manager.
+- `spec.host`: endpoint writer do cluster Aurora PostgreSQL.
 - `spec.port`: porta do banco.
 - `spec.adminSecretArn`: secret com credencial administrativa.
 - `spec.secretPrefix`: prefixo usado para criar secrets das aplicacoes.
@@ -257,14 +257,14 @@ Conteudo:
 
 ```json
 {
-  "engine": "postgres",
-  "host": "prod-main.xxxxxx.us-east-1.rds.amazonaws.com",
+  "engine": "aurora-postgres",
+  "host": "prod-main.cluster-xxxxxx.us-east-1.rds.amazonaws.com",
   "port": 5432,
   "database": "orders",
   "username": "orders_api_rw",
   "password": "senha-gerada",
-  "jdbcUrl": "jdbc:postgresql://prod-main.xxxxxx.us-east-1.rds.amazonaws.com:5432/orders",
-  "uri": "postgresql://orders_api_rw:senha-gerada@prod-main.xxxxxx.us-east-1.rds.amazonaws.com:5432/orders"
+  "jdbcUrl": "jdbc:postgresql://prod-main.cluster-xxxxxx.us-east-1.rds.amazonaws.com:5432/orders",
+  "uri": "postgresql://orders_api_rw:senha-gerada@prod-main.cluster-xxxxxx.us-east-1.rds.amazonaws.com:5432/orders"
 }
 ```
 
@@ -448,7 +448,7 @@ Recomendacao inicial:
 - Kubernetes controller: kube-rs
 - HTTP auxiliar: Axum
 - OpenTelemetry: tracing, tracing-opentelemetry, opentelemetry-otlp
-- Banco inicial: PostgreSQL
+- Banco inicial: Aurora PostgreSQL
 - AWS SDK: AWS SDK for Rust
 - Driver PostgreSQL: `sqlx`
 - Testes Kubernetes: testes unitarios com fakes e testes e2e com kind futuramente
@@ -568,7 +568,7 @@ Criterio de pronto:
 - O core consegue criar/atualizar secrets com contrato definido.
 - Erros AWS sao propagados para conditions.
 
-### Fase 3 - PostgreSQL Provisioner
+### Fase 3 - Aurora PostgreSQL Provisioner
 
 Objetivo: criar database, usuarios e grants.
 
@@ -697,4 +697,4 @@ Escopo minimo:
 5. Implementar PostgreSQL provisioner com testes.
 6. Conectar reconciler ao provisioner.
 7. Empacotar imagem e Helm chart.
-8. Testar em um cluster sandbox contra um RDS PostgreSQL real.
+8. Testar em um cluster sandbox contra um Aurora PostgreSQL real.
