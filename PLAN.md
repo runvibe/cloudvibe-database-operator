@@ -452,7 +452,9 @@ Recomendacao inicial:
 - AWS SDK: AWS SDK for Rust
 - Driver PostgreSQL: `sqlx`
 - Testes Kubernetes: testes unitarios com fakes e testes e2e com kind futuramente
-- Testes de banco: testcontainers ou Docker Compose com PostgreSQL
+- Testes E2E locais: Docker Compose com PostgreSQL e LocalStack
+- Testes de banco: Docker Compose com PostgreSQL real
+- Testes AWS: LocalStack simulando AWS Secrets Manager
 - Build de imagem: Docker
 - Deploy: Helm chart e manifests Kubernetes
 
@@ -465,6 +467,16 @@ GET /metrics
 ```
 
 O servidor Axum deve ser instrumentado com OpenTelemetry para traces, logs correlacionados e metricas. Reconciliacoes do controller, chamadas ao AWS Secrets Manager e operacoes PostgreSQL tambem devem criar spans.
+
+O ambiente de testes E2E local deve usar Docker Compose. A composicao minima deve subir:
+
+```text
+postgres
+localstack
+cloudvibe-database-operator
+```
+
+O LocalStack deve expor o Secrets Manager para validar leitura do admin secret e criacao dos secrets de aplicacao sem depender de AWS real. O PostgreSQL deve validar database, schema, usuario e grants com permissoes reais.
 
 ## Estrutura Inicial do Repositorio
 
@@ -578,6 +590,27 @@ Criterio de pronto:
 - Usuarios readonly nao conseguem escrever.
 - Usuarios readwrite conseguem ler e escrever.
 
+### Fase 3.5 - E2E Local com Docker Compose
+
+Objetivo: validar o fluxo completo sem AWS real.
+
+Tarefas:
+
+- Criar `docker-compose.e2e.yaml`.
+- Subir PostgreSQL real.
+- Subir LocalStack com Secrets Manager.
+- Criar script de bootstrap do admin secret no LocalStack.
+- Rodar o operator apontando para PostgreSQL e LocalStack.
+- Aplicar samples de `DatabaseInstance` e `DatabaseAccess`.
+- Validar que o secret de aplicacao foi criado no LocalStack.
+- Validar que usuarios conseguem acessar o PostgreSQL com as permissoes esperadas.
+
+Criterio de pronto:
+
+- Um comando local executa o fluxo completo de ponta a ponta.
+- O teste prova criacao de database, usuarios, grants e secrets.
+- O fluxo nao exige credenciais AWS reais.
+
 ### Fase 4 - Reconciler DatabaseAccess
 
 Objetivo: unir Kubernetes, AWS e PostgreSQL.
@@ -641,54 +674,20 @@ Escopo minimo:
 - `DatabaseAccess`
 - PostgreSQL
 - AWS Secrets Manager
+- LocalStack para E2E de Secrets Manager
+- Docker Compose para E2E local
 - Permissoes `readonly` e `readwrite`
 - Database e schema `public`
 - Status com ARNs
 - Helm chart para instalar o operator
 
-Fora do MVP:
-
-- MySQL
-- Rotacao automatica
-- Delecao automatica de database
-- API HTTP propria
-- UI
-- Multi-cloud
-- RDS IAM Auth para usuarios de aplicacao
-
 ## Riscos e Decisoes Importantes
 
-### Criar database automaticamente
-
-Criar database e util, mas pode ser sensivel em producao. O operador deve validar `allowedNamespaces` e talvez futuramente suportar policies.
-
-### Deletar recursos externos
-
-Deletar database por acidente e perigoso. A politica inicial deve ser `Retain`.
-
-### Senha de usuario existente sem secret
-
-Esse estado e ambiguo. A primeira versao deve falhar de forma clara e pedir intervencao manual, em vez de sobrescrever sem rastreabilidade.
-
-### Default privileges
-
-Default privileges no PostgreSQL dependem de quem cria objetos. Para migrations, talvez seja necessario um usuario especifico de migration ou configurar ownership com mais cuidado em versoes futuras.
-
-### Concorrencia
-
-Dois `DatabaseAccess` podem tentar mexer no mesmo database ou usuario. O operador deve validar nomes e tratar conflitos. Futuramente pode existir uma regra de ownership.
-
-## Perguntas em Aberto
-
-- O primeiro ambiente alvo sera EKS?
-- Sera usado IRSA ou EKS Pod Identity?
-- O secret administrativo ja existe no AWS Secrets Manager?
-- O database deve ser criado sempre pelo operator ou algumas instancias permitirao apenas usuarios?
-- Precisamos de usuario `migration` alem de `readonly` e `readwrite`?
-- O secret criado deve conter `uri` com senha ou apenas campos separados?
-- O nome do secret deve incluir namespace sempre?
-- O operator deve criar tambem `ExternalSecret` opcionalmente?
-
+- Criar database automaticamente e util, mas sensivel em producao; validar `allowedNamespaces` e evoluir para policies.
+- Deletar database por acidente e perigoso; a politica inicial deve ser `Retain`.
+- Usuario existente sem secret e estado ambiguo; falhar claramente e exigir intervencao manual.
+- Default privileges no PostgreSQL dependem de quem cria objetos; migrations podem exigir usuario proprio no futuro.
+- Dois `DatabaseAccess` podem disputar o mesmo database ou usuario; validar nomes e tratar conflitos.
 ## Primeira Entrega Recomendada
 
 1. Inicializar projeto Rust com kube-rs, Axum, sqlx e OpenTelemetry.
@@ -699,5 +698,3 @@ Dois `DatabaseAccess` podem tentar mexer no mesmo database ou usuario. O operado
 6. Conectar reconciler ao provisioner.
 7. Empacotar imagem e Helm chart.
 8. Testar em um cluster sandbox contra um RDS PostgreSQL real.
-
-Essa sequencia reduz risco porque valida primeiro o contrato Kubernetes, depois a integracao AWS, depois o banco, e por fim junta tudo no reconciler.

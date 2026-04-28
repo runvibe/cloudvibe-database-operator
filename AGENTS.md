@@ -82,7 +82,10 @@ Regras:
 
 - Toda regra de validacao deve ter teste unitario.
 - Todo comportamento de reconciler deve ter teste com fake client ou teste e2e quando adequado.
-- Provisionamento PostgreSQL deve ter testes contra PostgreSQL real em container ou ambiente local controlado.
+- Provisionamento PostgreSQL deve ter testes contra PostgreSQL real em container via Docker Compose.
+- Fluxos AWS devem ser testados em E2E com LocalStack, especialmente Secrets Manager.
+- Testes E2E locais devem usar `docker-compose.e2e.yaml` para subir PostgreSQL, LocalStack e os componentes necessarios.
+- Testes E2E nao devem depender de credenciais AWS reais.
 - Bugs corrigidos devem receber teste de regressao quando for pratico.
 
 ### Rust

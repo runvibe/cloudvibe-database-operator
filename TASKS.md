@@ -315,10 +315,21 @@ Legenda:
 
 ### 13.4 E2E
 
+- [ ] `MVP` Criar `docker-compose.e2e.yaml`.
+- [ ] `MVP` Configurar servico PostgreSQL no Docker Compose.
+- [ ] `MVP` Configurar servico LocalStack no Docker Compose com Secrets Manager.
+- [ ] `MVP` Configurar variaveis AWS locais para apontar SDK para LocalStack.
+- [ ] `MVP` Criar script de bootstrap do admin secret no LocalStack.
+- [ ] `MVP` Criar script para aplicar CRDs e samples no ambiente E2E.
+- [ ] `MVP` Rodar operator localmente contra PostgreSQL e LocalStack.
+- [ ] `MVP` Validar criacao do database no PostgreSQL.
+- [ ] `MVP` Validar criacao dos usuarios no PostgreSQL.
+- [ ] `MVP` Validar grants readonly e readwrite no PostgreSQL.
+- [ ] `MVP` Validar criacao dos secrets de aplicacao no LocalStack.
+- [ ] `MVP` Criar comando unico para executar E2E local.
 - [ ] `Later` Criar teste com kind.
 - [ ] `Later` Instalar operator no kind.
-- [ ] `Later` Aplicar CRDs reais.
-- [ ] `Later` Validar reconciliacao completa com fakes ou LocalStack.
+- [ ] `Later` Aplicar CRDs reais dentro do kind.
 
 ## 14. CI/CD
 
