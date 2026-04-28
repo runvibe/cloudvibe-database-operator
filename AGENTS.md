@@ -95,6 +95,16 @@ Regras:
 - Manter funcoes pequenas e orientadas a uma responsabilidade.
 - Evitar traits grandes; preferir interfaces pequenas nos limites com Kubernetes, AWS e banco.
 
+### Dependencias Rust
+
+- Usar as versoes estaveis mais recentes possiveis das crates do projeto.
+- Antes de adicionar ou atualizar qualquer crate no `Cargo.toml`, pesquisar a versao estavel mais recente.
+- Preferir `cargo info <crate>`, crates.io e documentacao oficial da crate para confirmar versao e feature flags.
+- Nao usar versoes alpha, beta, rc, prerelease, forks ou crates abandonadas sem justificativa registrada.
+- Quando houver incompatibilidade entre crates, escolher a combinacao estavel mais recente e documentar a razao no commit ou na documentacao tecnica.
+- Evitar pinagem excessivamente restritiva sem necessidade. Preferir requisitos compativeis com SemVer.
+- Apos alterar dependencias, rodar `cargo update` quando apropriado e validar com `cargo test`, `cargo clippy` e build.
+
 ## Regras de mudanca
 
 - Fazer mudancas pequenas e coesas.

@@ -14,6 +14,7 @@ Legenda:
 - [ ] `MVP` Inicializar projeto Rust com Cargo.
 - [ ] `MVP` Definir package name e metadata do crate.
 - [ ] `MVP` Adicionar dependencias base: `tokio`, `kube`, `k8s-openapi`, `serde`, `schemars`, `thiserror`, `tracing`, `axum`, `sqlx` e AWS SDK.
+- [ ] `MVP` Pesquisar e registrar as versoes estaveis mais recentes das crates antes de adiciona-las ao `Cargo.toml`.
 - [ ] `MVP` Gerar estrutura base com `src/api`, `src/controller`, `src/database`, `src/aws`, `src/http` e `src/telemetry`.
 - [ ] `MVP` Configurar comandos de desenvolvimento via `Makefile` ou `justfile`.
 - [ ] `MVP` Configurar `.gitignore` para binarios, builds e artefatos temporarios.
