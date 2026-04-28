@@ -80,17 +80,18 @@ CloudVibe Database Operator
 Componentes internos:
 
 ```text
-cmd/manager
-internal/controller
-internal/database/postgres
-internal/aws/secretsmanager
-internal/password
-internal/naming
-api/v1alpha1
-config/crd
-config/rbac
-config/manager
-config/samples
+src/main.rs
+src/api/v1alpha1
+src/controller
+src/database/postgres
+src/aws/secretsmanager
+src/http
+src/telemetry
+src/password
+src/naming
+deploy/crds
+deploy/rbac
+deploy/samples
 ```
 
 ## CRDs
@@ -442,42 +443,56 @@ spec:
 
 Recomendacao inicial:
 
-- Linguagem: Go
-- Framework: Kubebuilder/controller-runtime
+- Linguagem: Rust
+- Runtime async: Tokio
+- Kubernetes controller: kube-rs
+- HTTP auxiliar: Axum
+- OpenTelemetry: tracing, tracing-opentelemetry, opentelemetry-otlp
 - Banco inicial: PostgreSQL
-- AWS SDK: AWS SDK for Go v2
-- Driver PostgreSQL: `pgx`
-- Testes Kubernetes: envtest
+- AWS SDK: AWS SDK for Rust
+- Driver PostgreSQL: `sqlx`
+- Testes Kubernetes: testes unitarios com fakes e testes e2e com kind futuramente
 - Testes de banco: testcontainers ou Docker Compose com PostgreSQL
 - Build de imagem: Docker
-- Deploy: Helm chart ou manifests gerados pelo Kubebuilder
+- Deploy: Helm chart e manifests Kubernetes
+
+O Axum nao deve ser a interface principal de provisionamento no MVP. A interface principal e a API Kubernetes via CRDs. O Axum deve expor endpoints operacionais:
+
+```text
+GET /healthz
+GET /readyz
+GET /metrics
+```
+
+O servidor Axum deve ser instrumentado com OpenTelemetry para traces, logs correlacionados e metricas. Reconciliacoes do controller, chamadas ao AWS Secrets Manager e operacoes PostgreSQL tambem devem criar spans.
 
 ## Estrutura Inicial do Repositorio
 
 ```text
 .
-├── api/
-│   └── v1alpha1/
-├── cmd/
-│   └── manager/
-├── config/
-│   ├── crd/
-│   ├── default/
-│   ├── manager/
-│   ├── rbac/
-│   └── samples/
-├── internal/
+├── src/
+│   ├── main.rs
+│   ├── api/
+│   │   └── v1alpha1/
 │   ├── aws/
-│   │   └── secretsmanager/
+│   │   └── secretsmanager.rs
 │   ├── controller/
 │   ├── database/
 │   │   └── postgres/
-│   ├── naming/
-│   └── password/
+│   ├── http/
+│   ├── naming.rs
+│   ├── password.rs
+│   └── telemetry.rs
+├── deploy/
+│   ├── crds/
+│   ├── rbac/
+│   └── samples/
 ├── charts/
 │   └── cloudvibe-database-operator/
 ├── docs/
-├── test/
+├── tests/
+├── Cargo.toml
+├── Dockerfile
 └── PLAN.md
 ```
 
@@ -489,17 +504,19 @@ Objetivo: criar esqueleto do projeto.
 
 Tarefas:
 
-- Inicializar projeto com Kubebuilder.
-- Definir modulo Go.
+- Inicializar projeto Rust.
+- Definir crate e metadata do Cargo.
+- Adicionar dependencias base: `tokio`, `kube`, `k8s-openapi`, `serde`, `schemars`, `thiserror`, `tracing`, `axum`, `sqlx` e AWS SDK.
 - Criar tipos `DatabaseInstance` e `DatabaseAccess`.
-- Gerar CRDs.
+- Gerar/exportar CRDs a partir dos tipos Rust.
 - Criar manifests de RBAC.
 - Criar samples basicos.
 - Configurar lint/test/build.
 
 Criterio de pronto:
 
-- `make test` executa com sucesso.
+- `cargo test` executa com sucesso.
+- `cargo clippy` executa sem warnings relevantes.
 - CRDs sao gerados.
 - Manager sobe sem reconciliar recursos reais.
 
@@ -674,7 +691,7 @@ Dois `DatabaseAccess` podem tentar mexer no mesmo database ou usuario. O operado
 
 ## Primeira Entrega Recomendada
 
-1. Inicializar Kubebuilder.
+1. Inicializar projeto Rust com kube-rs, Axum, sqlx e OpenTelemetry.
 2. Criar CRDs `DatabaseInstance` e `DatabaseAccess`.
 3. Implementar reconciler com validacao e status falso, sem tocar AWS/banco.
 4. Implementar AWS Secrets Manager client.

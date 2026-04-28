@@ -11,15 +11,17 @@ Legenda:
 
 ## 0. Fundacao do Repositorio
 
-- [ ] `MVP` Inicializar projeto Go com Kubebuilder.
-- [ ] `MVP` Definir module path do Go.
-- [ ] `MVP` Gerar estrutura base com `cmd/`, `api/`, `internal/` e `config/`.
-- [ ] `MVP` Configurar `Makefile` padrao do Kubebuilder.
+- [ ] `MVP` Inicializar projeto Rust com Cargo.
+- [ ] `MVP` Definir package name e metadata do crate.
+- [ ] `MVP` Adicionar dependencias base: `tokio`, `kube`, `k8s-openapi`, `serde`, `schemars`, `thiserror`, `tracing`, `axum`, `sqlx` e AWS SDK.
+- [ ] `MVP` Gerar estrutura base com `src/api`, `src/controller`, `src/database`, `src/aws`, `src/http` e `src/telemetry`.
+- [ ] `MVP` Configurar comandos de desenvolvimento via `Makefile` ou `justfile`.
 - [ ] `MVP` Configurar `.gitignore` para binarios, builds e artefatos temporarios.
 - [ ] `MVP` Criar `Dockerfile` do manager.
 - [ ] `MVP` Criar README inicial com objetivo do projeto.
-- [ ] `MVP` Garantir que `make test` roda sem falhas no projeto vazio.
-- [ ] `MVP` Garantir que `make manifests` gera CRDs sem erro.
+- [ ] `MVP` Garantir que `cargo test` roda sem falhas no projeto vazio.
+- [ ] `MVP` Garantir que `cargo clippy` roda sem warnings relevantes.
+- [ ] `MVP` Garantir que CRDs sao exportados a partir dos tipos Rust.
 
 ## 1. API Kubernetes v1alpha1
 
@@ -80,7 +82,7 @@ Legenda:
 - [ ] `MVP` Atualizar condition `Ready=False` quando `DatabaseInstance` nao existir.
 - [ ] `MVP` Atualizar condition `Ready=False` quando namespace nao for permitido.
 - [ ] `MVP` Atualizar `observedGeneration` apos reconciliacao.
-- [ ] `MVP` Criar testes de reconciler com envtest para estados basicos.
+- [ ] `MVP` Criar testes de reconciler com fake client para estados basicos.
 
 ## 3. Condicoes, Eventos e Status
 
@@ -105,7 +107,7 @@ Legenda:
 
 ### 4.2 Implementacao AWS
 
-- [ ] `MVP` Adicionar AWS SDK for Go v2.
+- [ ] `MVP` Adicionar AWS SDK for Rust.
 - [ ] `MVP` Criar client de Secrets Manager.
 - [ ] `MVP` Implementar `GetSecretValue` para admin secret.
 - [ ] `MVP` Implementar `DescribeSecret`.
@@ -142,7 +144,7 @@ Legenda:
 
 ### 6.2 Conexao
 
-- [ ] `MVP` Adicionar driver `pgx`.
+- [ ] `MVP` Adicionar `sqlx` com suporte a PostgreSQL e rustls.
 - [ ] `MVP` Implementar conexao no database administrativo.
 - [ ] `MVP` Implementar conexao no database alvo.
 - [ ] `MVP` Configurar timeout de conexao.
@@ -220,12 +222,21 @@ Legenda:
 
 ## 9. Observabilidade
 
-- [ ] `MVP` Usar logs estruturados do controller-runtime.
+- [ ] `MVP` Usar logs estruturados com `tracing`.
+- [ ] `MVP` Criar modulo `src/telemetry`.
+- [ ] `MVP` Configurar OpenTelemetry com export OTLP.
+- [ ] `MVP` Configurar propagacao de contexto.
+- [ ] `MVP` Instrumentar servidor Axum com spans por request.
+- [ ] `MVP` Instrumentar reconciliacao de `DatabaseAccess`.
+- [ ] `MVP` Instrumentar chamadas ao AWS Secrets Manager.
+- [ ] `MVP` Instrumentar operacoes PostgreSQL relevantes.
 - [ ] `MVP` Logar namespace/name do recurso reconciliado.
 - [ ] `MVP` Logar instanceRef e database sem senha.
-- [ ] `MVP` Expor metricas padrao do controller-runtime.
-- [ ] `MVP` Criar metricas customizadas para reconciliacoes com sucesso.
-- [ ] `MVP` Criar metricas customizadas para reconciliacoes com erro.
+- [ ] `MVP` Expor endpoint HTTP `GET /healthz` com Axum.
+- [ ] `MVP` Expor endpoint HTTP `GET /readyz` com Axum.
+- [ ] `MVP` Expor endpoint HTTP `GET /metrics` quando o exporter escolhido suportar scrape.
+- [ ] `MVP` Criar metricas para reconciliacoes com sucesso.
+- [ ] `MVP` Criar metricas para reconciliacoes com erro.
 - [ ] `Later` Criar metricas por tipo de erro.
 - [ ] `Later` Criar dashboard Grafana.
 
@@ -286,7 +297,7 @@ Legenda:
 
 ### 13.2 Controller
 
-- [ ] `MVP` Configurar envtest.
+- [ ] `MVP` Configurar testes com fake Kubernetes client.
 - [ ] `MVP` Testar criacao de `DatabaseAccess`.
 - [ ] `MVP` Testar status de erro sem `DatabaseInstance`.
 - [ ] `MVP` Testar bloqueio por `allowedNamespaces`.
@@ -311,9 +322,10 @@ Legenda:
 ## 14. CI/CD
 
 - [ ] `MVP` Criar workflow de CI para pull requests.
-- [ ] `MVP` Rodar `go test ./...`.
-- [ ] `MVP` Rodar `go vet ./...`.
-- [ ] `MVP` Rodar `make manifests` e verificar diff limpo.
+- [ ] `MVP` Rodar `cargo fmt --check`.
+- [ ] `MVP` Rodar `cargo clippy --all-targets --all-features`.
+- [ ] `MVP` Rodar `cargo test --all-features`.
+- [ ] `MVP` Rodar geracao de CRDs e verificar diff limpo.
 - [ ] `MVP` Rodar `helm lint`.
 - [ ] `MVP` Buildar imagem Docker.
 - [ ] `Later` Publicar imagem em GHCR.

@@ -12,12 +12,12 @@ Manter arquivos pequenos e focados. Quando um arquivo se aproximar do limite, di
 
 Limites:
 
-- Arquivos Go de producao: maximo de 300 linhas.
-- Arquivos Go de teste: maximo de 500 linhas.
+- Arquivos Rust de producao: maximo de 300 linhas.
+- Arquivos Rust de teste: maximo de 500 linhas.
 - Arquivos YAML de manifests, samples e Helm templates: maximo de 250 linhas.
 - Arquivos Markdown de documentacao: maximo de 700 linhas.
 - Arquivos shell/scripts: maximo de 200 linhas.
-- Arquivos gerados por ferramentas, como CRDs e deepcopy: isentos do limite, mas nao devem ser editados manualmente.
+- Arquivos gerados por ferramentas, como CRDs: isentos do limite, mas nao devem ser editados manualmente.
 
 Regras adicionais:
 
@@ -30,8 +30,10 @@ Regras adicionais:
 
 ### Kubernetes Operator
 
-- Usar Kubebuilder e controller-runtime como base do projeto.
-- A API publica do Kubernetes deve viver em `api/v1alpha1`.
+- Usar Rust, kube-rs e Tokio como base do projeto.
+- Usar Axum para endpoints operacionais, como health, readiness e metricas.
+- Instrumentar o servidor Axum com OpenTelemetry.
+- A API publica do Kubernetes deve viver em `src/api/v1alpha1`.
 - O reconciler deve orquestrar o fluxo, nao concentrar regra de negocio.
 - O reconciler deve ser idempotente: reconciliar varias vezes o mesmo recurso nao pode recriar senha nem quebrar grants.
 - O estado externo deve ser refletido em `status.conditions`, nunca em logs soltos apenas.
@@ -42,12 +44,14 @@ Regras adicionais:
 
 Separar o projeto em camadas simples:
 
-- `api/v1alpha1`: tipos Kubernetes e validacoes da API.
-- `internal/controller`: reconcilers e integracao com Kubernetes.
-- `internal/database/postgres`: provisionamento PostgreSQL.
-- `internal/aws/secretsmanager`: integracao com AWS Secrets Manager.
-- `internal/password`: geracao de senhas.
-- `internal/naming`: nomes de secrets e validacao de identificadores.
+- `src/api/v1alpha1`: tipos Kubernetes e validacoes da API.
+- `src/controller`: reconcilers e integracao com Kubernetes.
+- `src/database/postgres`: provisionamento PostgreSQL com sqlx.
+- `src/aws/secretsmanager`: integracao com AWS Secrets Manager.
+- `src/http`: servidor Axum para endpoints operacionais.
+- `src/telemetry`: OpenTelemetry, tracing e metricas.
+- `src/password`: geracao de senhas.
+- `src/naming`: nomes de secrets e validacao de identificadores.
 
 Regras:
 
@@ -77,9 +81,19 @@ Regras:
 ### Testes
 
 - Toda regra de validacao deve ter teste unitario.
-- Todo comportamento de reconciler deve ter teste com envtest ou fake client quando adequado.
+- Todo comportamento de reconciler deve ter teste com fake client ou teste e2e quando adequado.
 - Provisionamento PostgreSQL deve ter testes contra PostgreSQL real em container ou ambiente local controlado.
 - Bugs corrigidos devem receber teste de regressao quando for pratico.
+
+### Rust
+
+- Rodar `cargo fmt` antes de finalizar mudancas Rust.
+- Rodar `cargo clippy --all-targets --all-features` quando houver mudanca de codigo.
+- Preferir erros tipados com `thiserror`.
+- Evitar `unwrap` e `expect` em codigo de producao, exceto em inicializacao onde a falha deve encerrar o processo claramente.
+- Usar `tracing` para logs e spans; nao usar `println!` em codigo de producao.
+- Manter funcoes pequenas e orientadas a uma responsabilidade.
+- Evitar traits grandes; preferir interfaces pequenas nos limites com Kubernetes, AWS e banco.
 
 ## Regras de mudanca
 
