@@ -1,0 +1,14 @@
+apiVersion: database.cloudvibe.dev/v1alpha1
+kind: DatabaseInstance
+metadata:
+  name: prod-main-postgres
+  namespace: default
+spec:
+  engine: aurora-postgres
+  region: us-east-1
+  host: prod-main.cluster-xxxxxx.us-east-1.rds.amazonaws.com
+  port: 5432
+  adminSecretArn: arn:aws:secretsmanager:us-east-1:123456789012:secret:rds/prod-main/admin
+  secretPrefix: rds/prod-main
+  allowedNamespaces:
+    - default

@@ -1,0 +1,5 @@
+target
+.git
+.github
+*.log
+docker-compose.override.yaml

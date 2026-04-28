@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cloudvibe-database-operator.name" . }}
+rules:
+  - apiGroups: ["database.cloudvibe.dev"]
+    resources: ["databaseinstances", "databaseaccesses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["database.cloudvibe.dev"]
+    resources: ["databaseaccesses/status", "databaseinstances/status"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cloudvibe-database-operator.name" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "cloudvibe-database-operator.name" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cloudvibe-database-operator.name" . }}
+    namespace: {{ .Release.Namespace }}

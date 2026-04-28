@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+      - run: cargo test --all-features
+      - run: cargo run -- export-crds > /tmp/database.cloudvibe.dev.yaml
+      - run: diff -u deploy/crds/database.cloudvibe.dev.yaml /tmp/database.cloudvibe.dev.yaml
+      - uses: azure/setup-helm@v4
+      - run: helm lint charts/cloudvibe-database-operator

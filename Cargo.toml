@@ -1,0 +1,32 @@
+[package]
+name = "cloudvibe-database-operator"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Kubernetes operator for Aurora PostgreSQL database access provisioning"
+repository = "https://github.com/cloudvibedev/cloudvibe-database-operator"
+
+[dependencies]
+aws-config = "1.8.16"
+aws-sdk-secretsmanager = "1.104.0"
+axum = "0.8.9"
+chrono = { version = "0.4.44", default-features = false, features = ["clock", "serde"] }
+futures = "0.3.32"
+k8s-openapi = { version = "0.27.1", features = ["v1_35"] }
+kube = { version = "3.1.0", features = ["derive", "runtime", "client", "rustls-tls"] }
+opentelemetry = "0.31.0"
+opentelemetry-otlp = { version = "0.31.1", features = ["grpc-tonic"] }
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"] }
+rand = "0.10.1"
+regex = "1.12.3"
+schemars = { version = "1.2.1", features = ["chrono04"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+serde_yml = "0.0.12"
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "postgres", "tls-rustls"] }
+thiserror = "2.0.18"
+tokio = { version = "1.52.1", features = ["macros", "rt-multi-thread", "signal", "net"] }
+tower-http = { version = "0.6.8", features = ["trace", "request-id", "util"] }
+tracing = "0.1.44"
+tracing-opentelemetry = "0.32.1"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }

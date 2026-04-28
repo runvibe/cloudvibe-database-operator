@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cloudvibe-database-operator.name" . }}
+  labels:
+    {{- include "cloudvibe-database-operator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cloudvibe-database-operator.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "cloudvibe-database-operator.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "cloudvibe-database-operator.name" . }}
+      containers:
+        - name: manager
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: HTTP_ADDR
+              value: 0.0.0.0:8080
+            - name: RUST_LOG
+              value: {{ .Values.env.rustLog | quote }}
+            {{- if .Values.env.otlpEndpoint }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.env.otlpEndpoint | quote }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10001

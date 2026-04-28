@@ -1,0 +1,16 @@
+apiVersion: database.cloudvibe.dev/v1alpha1
+kind: DatabaseAccess
+metadata:
+  name: orders-db
+  namespace: default
+spec:
+  instanceRef:
+    name: prod-main-postgres
+  database: orders
+  schemas:
+    - public
+  users:
+    - name: orders_api_rw
+      permissions: readwrite
+    - name: orders_api_ro
+      permissions: readonly

@@ -11,56 +11,56 @@ Legenda:
 
 ## 0. Fundacao do Repositorio
 
-- [ ] `MVP` Inicializar projeto Rust com Cargo.
-- [ ] `MVP` Definir package name e metadata do crate.
-- [ ] `MVP` Adicionar dependencias base: `tokio`, `kube`, `k8s-openapi`, `serde`, `schemars`, `thiserror`, `tracing`, `axum`, `sqlx` e AWS SDK.
-- [ ] `MVP` Pesquisar e registrar as versoes estaveis mais recentes das crates antes de adiciona-las ao `Cargo.toml`.
-- [ ] `MVP` Gerar estrutura base com `src/api`, `src/controller`, `src/database`, `src/aws`, `src/http` e `src/telemetry`.
-- [ ] `MVP` Configurar comandos de desenvolvimento via `Makefile` ou `justfile`.
-- [ ] `MVP` Configurar `.gitignore` para binarios, builds e artefatos temporarios.
-- [ ] `MVP` Criar `Dockerfile` do manager.
-- [ ] `MVP` Criar README inicial com objetivo do projeto.
-- [ ] `MVP` Garantir que `cargo test` roda sem falhas no projeto vazio.
-- [ ] `MVP` Garantir que `cargo clippy` roda sem warnings relevantes.
-- [ ] `MVP` Garantir que CRDs sao exportados a partir dos tipos Rust.
+- [x] `MVP` Inicializar projeto Rust com Cargo.
+- [x] `MVP` Definir package name e metadata do crate.
+- [x] `MVP` Adicionar dependencias base: `tokio`, `kube`, `k8s-openapi`, `serde`, `schemars`, `thiserror`, `tracing`, `axum`, `sqlx` e AWS SDK.
+- [x] `MVP` Pesquisar e registrar as versoes estaveis mais recentes das crates antes de adiciona-las ao `Cargo.toml`.
+- [x] `MVP` Gerar estrutura base com `src/api`, `src/controller`, `src/database`, `src/aws`, `src/http` e `src/telemetry`.
+- [x] `MVP` Configurar comandos de desenvolvimento via `Makefile` ou `justfile`.
+- [x] `MVP` Configurar `.gitignore` para binarios, builds e artefatos temporarios.
+- [x] `MVP` Criar `Dockerfile` do manager.
+- [x] `MVP` Criar README inicial com objetivo do projeto.
+- [x] `MVP` Garantir que `cargo test` roda sem falhas no projeto vazio.
+- [x] `MVP` Garantir que `cargo clippy` roda sem warnings relevantes.
+- [x] `MVP` Garantir que CRDs sao exportados a partir dos tipos Rust.
 
 ## 1. API Kubernetes v1alpha1
 
 ### 1.1 DatabaseInstance
 
-- [ ] `MVP` Criar tipo `DatabaseInstance`.
-- [ ] `MVP` Criar `DatabaseInstanceSpec`.
-- [ ] `MVP` Adicionar campo `engine`.
-- [ ] `MVP` Adicionar campo `region`.
-- [ ] `MVP` Adicionar campo `host`.
-- [ ] `MVP` Adicionar campo `port`.
-- [ ] `MVP` Adicionar campo `adminSecretArn`.
-- [ ] `MVP` Adicionar campo `secretPrefix`.
-- [ ] `MVP` Adicionar campo `allowedNamespaces`.
-- [ ] `MVP` Criar `DatabaseInstanceStatus` minimo.
+- [x] `MVP` Criar tipo `DatabaseInstance`.
+- [x] `MVP` Criar `DatabaseInstanceSpec`.
+- [x] `MVP` Adicionar campo `engine`.
+- [x] `MVP` Adicionar campo `region`.
+- [x] `MVP` Adicionar campo `host`.
+- [x] `MVP` Adicionar campo `port`.
+- [x] `MVP` Adicionar campo `adminSecretArn`.
+- [x] `MVP` Adicionar campo `secretPrefix`.
+- [x] `MVP` Adicionar campo `allowedNamespaces`.
+- [x] `MVP` Criar `DatabaseInstanceStatus` minimo.
 - [ ] `MVP` Adicionar validacoes OpenAPI para campos obrigatorios.
-- [ ] `MVP` Restringir `engine` inicialmente para `aurora-postgres`.
-- [ ] `MVP` Gerar sample `config/samples/database_v1alpha1_databaseinstance.yaml`.
+- [x] `MVP` Restringir `engine` inicialmente para `aurora-postgres`.
+- [x] `MVP` Gerar sample `config/samples/database_v1alpha1_databaseinstance.yaml`.
 
 ### 1.2 DatabaseAccess
 
-- [ ] `MVP` Criar tipo `DatabaseAccess`.
-- [ ] `MVP` Criar `DatabaseAccessSpec`.
-- [ ] `MVP` Adicionar `instanceRef.name`.
-- [ ] `MVP` Adicionar campo `database`.
-- [ ] `MVP` Adicionar campo `schemas`.
-- [ ] `MVP` Adicionar lista `users`.
-- [ ] `MVP` Adicionar `users[].name`.
-- [ ] `MVP` Adicionar `users[].permissions`.
-- [ ] `MVP` Adicionar `users[].secretName` como opcional.
-- [ ] `MVP` Restringir `permissions` para `readonly` e `readwrite`.
-- [ ] `MVP` Criar `DatabaseAccessStatus`.
-- [ ] `MVP` Adicionar `status.phase`.
-- [ ] `MVP` Adicionar `status.observedGeneration`.
-- [ ] `MVP` Adicionar `status.users[].secretArn`.
-- [ ] `MVP` Adicionar `status.conditions`.
-- [ ] `MVP` Adicionar colunas para `kubectl get databaseaccess`.
-- [ ] `MVP` Gerar sample `config/samples/database_v1alpha1_databaseaccess.yaml`.
+- [x] `MVP` Criar tipo `DatabaseAccess`.
+- [x] `MVP` Criar `DatabaseAccessSpec`.
+- [x] `MVP` Adicionar `instanceRef.name`.
+- [x] `MVP` Adicionar campo `database`.
+- [x] `MVP` Adicionar campo `schemas`.
+- [x] `MVP` Adicionar lista `users`.
+- [x] `MVP` Adicionar `users[].name`.
+- [x] `MVP` Adicionar `users[].permissions`.
+- [x] `MVP` Adicionar `users[].secretName` como opcional.
+- [x] `MVP` Restringir `permissions` para `readonly` e `readwrite`.
+- [x] `MVP` Criar `DatabaseAccessStatus`.
+- [x] `MVP` Adicionar `status.phase`.
+- [x] `MVP` Adicionar `status.observedGeneration`.
+- [x] `MVP` Adicionar `status.users[].secretArn`.
+- [x] `MVP` Adicionar `status.conditions`.
+- [x] `MVP` Adicionar colunas para `kubectl get databaseaccess`.
+- [x] `MVP` Gerar sample `config/samples/database_v1alpha1_databaseaccess.yaml`.
 
 ### 1.3 Validacao da API
 
@@ -245,28 +245,28 @@ Legenda:
 
 ### 10.1 Imagem
 
-- [ ] `MVP` Criar build multi-stage no Dockerfile.
-- [ ] `MVP` Rodar manager como usuario nao-root.
+- [x] `MVP` Criar build multi-stage no Dockerfile.
+- [x] `MVP` Rodar manager como usuario nao-root.
 - [ ] `MVP` Publicar imagem com tag versionada.
 - [ ] `MVP` Documentar variaveis de ambiente do manager.
 
 ### 10.2 Manifests
 
 - [ ] `MVP` Gerar manifests `config/default`.
-- [ ] `MVP` Validar RBAC gerado.
+- [x] `MVP` Validar RBAC gerado.
 - [ ] `MVP` Validar leader election.
 - [ ] `MVP` Validar namespace de instalacao.
 
 ### 10.3 Helm Chart
 
-- [ ] `MVP` Criar chart `charts/cloudvibe-database-operator`.
-- [ ] `MVP` Templatear deployment do manager.
-- [ ] `MVP` Templatear service account.
-- [ ] `MVP` Templatear RBAC.
+- [x] `MVP` Criar chart `charts/cloudvibe-database-operator`.
+- [x] `MVP` Templatear deployment do manager.
+- [x] `MVP` Templatear service account.
+- [x] `MVP` Templatear RBAC.
 - [ ] `MVP` Templatear CRDs ou documentar instalacao separada.
-- [ ] `MVP` Suportar annotation de IRSA/EKS Pod Identity no service account.
-- [ ] `MVP` Criar `values.yaml` padrao.
-- [ ] `MVP` Rodar `helm lint`.
+- [x] `MVP` Suportar annotation de IRSA/EKS Pod Identity no service account.
+- [x] `MVP` Criar `values.yaml` padrao.
+- [x] `MVP` Rodar `helm lint`.
 
 ## 11. AWS/IAM
 
@@ -289,12 +289,12 @@ Legenda:
 
 ### 13.1 Unitarios
 
-- [ ] `MVP` Testar validacao de nomes.
-- [ ] `MVP` Testar geracao de nomes de secrets.
-- [ ] `MVP` Testar serializacao de app secret.
-- [ ] `MVP` Testar parsing de admin secret.
-- [ ] `MVP` Testar geracao de senha.
-- [ ] `MVP` Testar SQL/quote de identifiers.
+- [x] `MVP` Testar validacao de nomes.
+- [x] `MVP` Testar geracao de nomes de secrets.
+- [x] `MVP` Testar serializacao de app secret.
+- [x] `MVP` Testar parsing de admin secret.
+- [x] `MVP` Testar geracao de senha.
+- [x] `MVP` Testar SQL/quote de identifiers.
 
 ### 13.2 Controller
 
@@ -315,11 +315,11 @@ Legenda:
 
 ### 13.4 E2E
 
-- [ ] `MVP` Criar `docker-compose.e2e.yaml`.
-- [ ] `MVP` Configurar servico PostgreSQL no Docker Compose.
-- [ ] `MVP` Configurar servico LocalStack no Docker Compose com Secrets Manager.
-- [ ] `MVP` Configurar variaveis AWS locais para apontar SDK para LocalStack.
-- [ ] `MVP` Criar script de bootstrap do admin secret no LocalStack.
+- [x] `MVP` Criar `docker-compose.e2e.yaml`.
+- [x] `MVP` Configurar servico PostgreSQL no Docker Compose.
+- [x] `MVP` Configurar servico LocalStack no Docker Compose com Secrets Manager.
+- [x] `MVP` Configurar variaveis AWS locais para apontar SDK para LocalStack.
+- [x] `MVP` Criar script de bootstrap do admin secret no LocalStack.
 - [ ] `MVP` Criar script para aplicar CRDs e samples no ambiente E2E.
 - [ ] `MVP` Rodar operator localmente contra PostgreSQL e LocalStack.
 - [ ] `MVP` Validar criacao do database no PostgreSQL.
@@ -333,13 +333,13 @@ Legenda:
 
 ## 14. CI/CD
 
-- [ ] `MVP` Criar workflow de CI para pull requests.
-- [ ] `MVP` Rodar `cargo fmt --check`.
-- [ ] `MVP` Rodar `cargo clippy --all-targets --all-features`.
-- [ ] `MVP` Rodar `cargo test --all-features`.
-- [ ] `MVP` Rodar geracao de CRDs e verificar diff limpo.
-- [ ] `MVP` Rodar `helm lint`.
-- [ ] `MVP` Buildar imagem Docker.
+- [x] `MVP` Criar workflow de CI para pull requests.
+- [x] `MVP` Rodar `cargo fmt --check`.
+- [x] `MVP` Rodar `cargo clippy --all-targets --all-features`.
+- [x] `MVP` Rodar `cargo test --all-features`.
+- [x] `MVP` Rodar geracao de CRDs e verificar diff limpo.
+- [x] `MVP` Rodar `helm lint`.
+- [x] `MVP` Buildar imagem Docker.
 - [ ] `Later` Publicar imagem em GHCR.
 - [ ] `Later` Publicar chart Helm.
 - [ ] `Later` Gerar release semantica.
