@@ -1,0 +1,18 @@
+FROM debian:trixie-slim
+
+ARG TARGETARCH
+ARG APP_NAME=cloudvibe-database-operator
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 cloudvibe \
+    && useradd --system --uid 10001 --gid 10001 --create-home cloudvibe
+
+COPY --chmod=755 artifacts/${TARGETARCH}/${APP_NAME} /usr/local/bin/cloudvibe-database-operator
+
+USER cloudvibe
+WORKDIR /home/cloudvibe
+
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/cloudvibe-database-operator"]

@@ -340,7 +340,7 @@ Legenda:
 - [x] `MVP` Rodar geracao de CRDs e verificar diff limpo.
 - [x] `MVP` Rodar `helm lint`.
 - [x] `MVP` Buildar imagem Docker.
-- [ ] `Later` Publicar imagem em GHCR.
+- [x] `Later` Publicar imagem em GHCR.
 - [ ] `Later` Publicar chart Helm.
 - [ ] `Later` Gerar release semantica.
 
