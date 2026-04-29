@@ -8,6 +8,8 @@ const SERVICE_NAME: &str = "cloudvibe-database-operator";
 
 #[tokio::main]
 async fn main() -> ExitCode {
+    let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
+
     let _telemetry = match telemetry::init(SERVICE_NAME) {
         Ok(guard) => guard,
         Err(err) => {

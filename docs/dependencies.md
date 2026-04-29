@@ -24,6 +24,7 @@ Versions were checked with `cargo info` before being added to `Cargo.toml`.
 | `aws-sdk-secretsmanager` | `1.104.0` | Latest stable reported by `cargo info`. |
 | `rand` | `0.10.1` | Latest stable reported by `cargo info`. |
 | `regex` | `1.12.3` | Latest stable reported by `cargo info`. |
+| `rustls` | `0.23.40` | Latest stable; direct dependency selects the process crypto provider. |
 | `chrono` | `0.4.44` | Latest stable reported by `cargo info`. |
 | `serde_json` | `1.0.149` | Latest stable reported by `cargo info`. |
 | `futures` | `0.3.32` | Latest stable reported by `cargo info`. |
