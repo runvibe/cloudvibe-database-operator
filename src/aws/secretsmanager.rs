@@ -62,6 +62,33 @@ impl SecretsManagerStore {
         Ok(serde_json::from_str(value)?)
     }
 
+    #[instrument(skip(self), fields(secret_name))]
+    pub async fn get_app_secret(
+        &self,
+        secret_name: &str,
+    ) -> Result<Option<AppSecret>, SecretStoreError> {
+        let output = match self
+            .client
+            .get_secret_value()
+            .secret_id(secret_name)
+            .send()
+            .await
+        {
+            Ok(output) => output,
+            Err(err) => {
+                let message = err.to_string();
+                if message.contains("ResourceNotFoundException") {
+                    return Ok(None);
+                }
+                return Err(SecretStoreError::Aws(message));
+            }
+        };
+        let value = output
+            .secret_string()
+            .ok_or_else(|| SecretStoreError::MissingString(secret_name.to_string()))?;
+        Ok(Some(serde_json::from_str(value)?))
+    }
+
     #[instrument(skip(self, secret), fields(secret_name))]
     pub async fn put_app_secret(
         &self,

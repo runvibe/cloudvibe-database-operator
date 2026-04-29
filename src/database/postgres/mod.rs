@@ -1,6 +1,10 @@
 use crate::api::v1alpha1::DatabasePermission;
 use crate::naming::{NamingError, quote_identifier, validate_identifier};
-use sqlx::{Executor, PgPool};
+use sqlx::{
+    Executor, PgPool,
+    postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
+};
+use std::time::Duration;
 use thiserror::Error;
 use tracing::instrument;
 
@@ -18,9 +22,20 @@ pub struct ProvisionUser {
     pub permissions: DatabasePermission,
 }
 
+#[derive(Clone, Debug)]
+pub struct PostgresConnectionConfig {
+    pub host: String,
+    pub port: u16,
+    pub database: String,
+    pub username: String,
+    pub password: String,
+    pub ssl_mode: PgSslMode,
+}
+
 #[derive(Clone)]
 pub struct PostgresProvisioner {
     admin_pool: PgPool,
+    connection: Option<PostgresConnectionConfig>,
 }
 
 #[derive(Debug, Error)]
@@ -33,7 +48,18 @@ pub enum ProvisionError {
 
 impl PostgresProvisioner {
     pub fn new(admin_pool: PgPool) -> Self {
-        Self { admin_pool }
+        Self {
+            admin_pool,
+            connection: None,
+        }
+    }
+
+    pub async fn connect(connection: PostgresConnectionConfig) -> Result<Self, ProvisionError> {
+        let pool = connect_pool(&connection).await?;
+        Ok(Self {
+            admin_pool: pool,
+            connection: Some(connection),
+        })
     }
 
     #[instrument(skip(self, request), fields(database = request.database))]
@@ -45,7 +71,49 @@ impl PostgresProvisioner {
         for user in &request.users {
             validate_identifier(&user.name)?;
         }
+        self.create_database(&request.database).await?;
+        let target_pool = self.connect_target(&request.database).await?;
+        self.create_schemas(&target_pool, request).await?;
         self.create_roles(request).await?;
+        self.apply_grants(&target_pool, request).await?;
+        Ok(())
+    }
+
+    async fn create_database(&self, database: &str) -> Result<(), ProvisionError> {
+        let exists: bool =
+            sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname = $1)")
+                .bind(database)
+                .fetch_one(&self.admin_pool)
+                .await?;
+        if exists {
+            return Ok(());
+        }
+        let database = quote_identifier(database)?;
+        self.admin_pool
+            .execute(format!("CREATE DATABASE {database}").as_str())
+            .await?;
+        Ok(())
+    }
+
+    async fn connect_target(&self, database: &str) -> Result<PgPool, ProvisionError> {
+        let Some(mut connection) = self.connection.clone() else {
+            return Ok(self.admin_pool.clone());
+        };
+        connection.database = database.to_string();
+        connect_pool(&connection).await
+    }
+
+    async fn create_schemas(
+        &self,
+        target_pool: &PgPool,
+        request: &ProvisionRequest,
+    ) -> Result<(), ProvisionError> {
+        for schema in &request.schemas {
+            let schema = quote_identifier(schema)?;
+            target_pool
+                .execute(format!("CREATE SCHEMA IF NOT EXISTS {schema}").as_str())
+                .await?;
+        }
         Ok(())
     }
 
@@ -56,12 +124,79 @@ impl PostgresProvisioner {
             let sql = format!("CREATE ROLE {role} LOGIN PASSWORD {password}");
             match self.admin_pool.execute(sql.as_str()).await {
                 Ok(_) => {}
-                Err(sqlx::Error::Database(err)) if err.code().as_deref() == Some("42710") => {}
+                Err(sqlx::Error::Database(err)) if err.code().as_deref() == Some("42710") => {
+                    self.admin_pool
+                        .execute(format!("ALTER ROLE {role} PASSWORD {password}").as_str())
+                        .await?;
+                }
                 Err(err) => return Err(err.into()),
             }
         }
         Ok(())
     }
+
+    async fn apply_grants(
+        &self,
+        target_pool: &PgPool,
+        request: &ProvisionRequest,
+    ) -> Result<(), ProvisionError> {
+        let database = quote_identifier(&request.database)?;
+        for user in &request.users {
+            let role = quote_identifier(&user.name)?;
+            self.admin_pool
+                .execute(format!("GRANT CONNECT ON DATABASE {database} TO {role}").as_str())
+                .await?;
+
+            for schema in &request.schemas {
+                let schema = quote_identifier(schema)?;
+                match user.permissions {
+                    DatabasePermission::Readonly => {
+                        target_pool
+                            .execute(
+                                format!(
+                                    "GRANT USAGE ON SCHEMA {schema} TO {role}; \
+                                     GRANT SELECT ON ALL TABLES IN SCHEMA {schema} TO {role}; \
+                                     ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT SELECT ON TABLES TO {role}"
+                                )
+                                .as_str(),
+                            )
+                            .await?;
+                    }
+                    DatabasePermission::Readwrite => {
+                        target_pool
+                            .execute(
+                                format!(
+                                    "GRANT USAGE, CREATE ON SCHEMA {schema} TO {role}; \
+                                     GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA {schema} TO {role}; \
+                                     GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA {schema} TO {role}; \
+                                     ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role}; \
+                                     ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO {role}"
+                                )
+                                .as_str(),
+                            )
+                            .await?;
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+}
+
+async fn connect_pool(connection: &PostgresConnectionConfig) -> Result<PgPool, ProvisionError> {
+    let options = PgConnectOptions::new()
+        .host(&connection.host)
+        .port(connection.port)
+        .database(&connection.database)
+        .username(&connection.username)
+        .password(&connection.password)
+        .ssl_mode(connection.ssl_mode);
+
+    Ok(PgPoolOptions::new()
+        .max_connections(5)
+        .acquire_timeout(Duration::from_secs(10))
+        .connect_with(options)
+        .await?)
 }
 
 pub fn app_secret_uri(

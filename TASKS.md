@@ -72,17 +72,17 @@ Legenda:
 
 ## 2. Controller Skeleton
 
-- [ ] `MVP` Criar reconciler para `DatabaseAccess`.
-- [ ] `MVP` Registrar reconciler no manager.
-- [ ] `MVP` Configurar RBAC para ler `DatabaseInstance`.
-- [ ] `MVP` Configurar RBAC para ler e atualizar `DatabaseAccess`.
-- [ ] `MVP` Configurar RBAC para atualizar `DatabaseAccess/status`.
+- [x] `MVP` Criar reconciler para `DatabaseAccess`.
+- [x] `MVP` Registrar reconciler no manager.
+- [x] `MVP` Configurar RBAC para ler `DatabaseInstance`.
+- [x] `MVP` Configurar RBAC para ler e atualizar `DatabaseAccess`.
+- [x] `MVP` Configurar RBAC para atualizar `DatabaseAccess/status`.
 - [ ] `MVP` Configurar eventos Kubernetes.
-- [ ] `MVP` Implementar lookup de `DatabaseInstance` por `instanceRef.name`.
-- [ ] `MVP` Implementar validacao de `allowedNamespaces`.
-- [ ] `MVP` Atualizar condition `Ready=False` quando `DatabaseInstance` nao existir.
-- [ ] `MVP` Atualizar condition `Ready=False` quando namespace nao for permitido.
-- [ ] `MVP` Atualizar `observedGeneration` apos reconciliacao.
+- [x] `MVP` Implementar lookup de `DatabaseInstance` por `instanceRef.name`.
+- [x] `MVP` Implementar validacao de `allowedNamespaces`.
+- [x] `MVP` Atualizar condition `Ready=False` quando `DatabaseInstance` nao existir.
+- [x] `MVP` Atualizar condition `Ready=False` quando namespace nao for permitido.
+- [x] `MVP` Atualizar `observedGeneration` apos reconciliacao.
 - [ ] `MVP` Criar testes de reconciler com fake client para estados basicos.
 
 ## 3. Condicoes, Eventos e Status
@@ -91,7 +91,7 @@ Legenda:
 - [ ] `MVP` Definir phases iniciais: `Pending`, `Ready`, `Error`.
 - [ ] `MVP` Criar helper para setar `Ready=True`.
 - [ ] `MVP` Criar helper para setar `Ready=False`.
-- [ ] `MVP` Garantir que mensagens de erro nao vazam senha.
+- [x] `MVP` Garantir que mensagens de erro nao vazam senha.
 - [ ] `MVP` Emitir evento quando provisionamento comeca.
 - [ ] `MVP` Emitir evento quando provisionamento termina com sucesso.
 - [ ] `MVP` Emitir evento quando provisionamento falha.
@@ -109,30 +109,30 @@ Legenda:
 ### 4.2 Implementacao AWS
 
 - [ ] `MVP` Adicionar AWS SDK for Rust.
-- [ ] `MVP` Criar client de Secrets Manager.
-- [ ] `MVP` Implementar `GetSecretValue` para admin secret.
+- [x] `MVP` Criar client de Secrets Manager.
+- [x] `MVP` Implementar `GetSecretValue` para admin secret.
 - [ ] `MVP` Implementar `DescribeSecret`.
-- [ ] `MVP` Implementar `CreateSecret`.
-- [ ] `MVP` Implementar `PutSecretValue`.
+- [x] `MVP` Implementar `CreateSecret`.
+- [x] `MVP` Implementar `PutSecretValue`.
 - [ ] `MVP` Implementar tags padrao nos secrets criados.
-- [ ] `MVP` Tratar secret existente de forma idempotente.
+- [x] `MVP` Tratar secret existente de forma idempotente.
 - [ ] `MVP` Criar mocks/fakes para testes.
 
 ### 4.3 Nomes de Secrets
 
-- [ ] `MVP` Implementar gerador de nome padrao `{secretPrefix}/{namespace}/{database}/{username}`.
-- [ ] `MVP` Permitir override via `users[].secretName`.
-- [ ] `MVP` Validar que o secret gerado nao sai do prefixo permitido.
+- [x] `MVP` Implementar gerador de nome padrao `{secretPrefix}/{namespace}/{database}/{username}`.
+- [x] `MVP` Permitir override via `users[].secretName`.
+- [x] `MVP` Validar que o secret gerado nao sai do prefixo permitido.
 - [ ] `Later` Permitir template de nomes por `DatabaseInstance`.
 
 ## 5. Geracao de Senhas
 
-- [ ] `MVP` Criar pacote `internal/password`.
-- [ ] `MVP` Gerar senha criptograficamente segura.
-- [ ] `MVP` Definir tamanho minimo da senha.
-- [ ] `MVP` Evitar caracteres problematicos para URL/connection string quando necessario.
-- [ ] `MVP` Criar testes para tamanho e variedade.
-- [ ] `MVP` Garantir que senha nunca aparece em logs.
+- [x] `MVP` Criar pacote `internal/password`.
+- [x] `MVP` Gerar senha criptograficamente segura.
+- [x] `MVP` Definir tamanho minimo da senha.
+- [x] `MVP` Evitar caracteres problematicos para URL/connection string quando necessario.
+- [x] `MVP` Criar testes para tamanho e variedade.
+- [x] `MVP` Garantir que senha nunca aparece em logs.
 
 ## 6. Aurora PostgreSQL Provisioner
 
@@ -146,63 +146,63 @@ Legenda:
 ### 6.2 Conexao
 
 - [ ] `MVP` Adicionar `sqlx` com suporte a PostgreSQL e rustls.
-- [ ] `MVP` Implementar conexao no database administrativo.
-- [ ] `MVP` Implementar conexao no database alvo.
-- [ ] `MVP` Configurar timeout de conexao.
-- [ ] `MVP` Configurar TLS/SSL mode adequado para Aurora PostgreSQL.
+- [x] `MVP` Implementar conexao no database administrativo.
+- [x] `MVP` Implementar conexao no database alvo.
+- [x] `MVP` Configurar timeout de conexao.
+- [x] `MVP` Configurar TLS/SSL mode adequado para Aurora PostgreSQL.
 - [ ] `Later` Suportar CA bundle customizado.
 
 ### 6.3 SQL Seguro
 
-- [ ] `MVP` Implementar quote seguro de identifiers.
-- [ ] `MVP` Validar identifiers antes de montar SQL.
-- [ ] `MVP` Usar parametros para valores sempre que possivel.
-- [ ] `MVP` Criar testes unitarios para quoting.
+- [x] `MVP` Implementar quote seguro de identifiers.
+- [x] `MVP` Validar identifiers antes de montar SQL.
+- [x] `MVP` Usar parametros para valores sempre que possivel.
+- [x] `MVP` Criar testes unitarios para quoting.
 
 ### 6.4 Database e Schemas
 
-- [ ] `MVP` Verificar se database existe.
-- [ ] `MVP` Criar database quando nao existir.
-- [ ] `MVP` Reconectar no database alvo apos criacao.
-- [ ] `MVP` Verificar se schema existe.
-- [ ] `MVP` Criar schema quando nao existir.
+- [x] `MVP` Verificar se database existe.
+- [x] `MVP` Criar database quando nao existir.
+- [x] `MVP` Reconectar no database alvo apos criacao.
+- [x] `MVP` Verificar se schema existe.
+- [x] `MVP` Criar schema quando nao existir.
 
 ### 6.5 Usuarios
 
-- [ ] `MVP` Verificar se usuario existe.
-- [ ] `MVP` Criar usuario com senha gerada quando nao existir.
-- [ ] `MVP` Atualizar senha quando fluxo exigir criacao de novo secret.
-- [ ] `MVP` Nao rotacionar senha automaticamente se secret ja existe.
+- [x] `MVP` Verificar se usuario existe.
+- [x] `MVP` Criar usuario com senha gerada quando nao existir.
+- [x] `MVP` Atualizar senha quando fluxo exigir criacao de novo secret.
+- [x] `MVP` Nao rotacionar senha automaticamente se secret ja existe.
 - [ ] `MVP` Marcar erro claro quando usuario existe mas secret esperado nao existe.
 
 ### 6.6 Grants Readonly
 
-- [ ] `MVP` Aplicar `GRANT CONNECT`.
-- [ ] `MVP` Aplicar `GRANT USAGE ON SCHEMA`.
-- [ ] `MVP` Aplicar `GRANT SELECT ON ALL TABLES`.
-- [ ] `MVP` Aplicar default privileges para tabelas futuras.
-- [ ] `MVP` Criar teste comprovando que readonly consegue ler.
-- [ ] `MVP` Criar teste comprovando que readonly nao consegue escrever.
+- [x] `MVP` Aplicar `GRANT CONNECT`.
+- [x] `MVP` Aplicar `GRANT USAGE ON SCHEMA`.
+- [x] `MVP` Aplicar `GRANT SELECT ON ALL TABLES`.
+- [x] `MVP` Aplicar default privileges para tabelas futuras.
+- [x] `MVP` Criar teste comprovando que readonly consegue ler.
+- [x] `MVP` Criar teste comprovando que readonly nao consegue escrever.
 
 ### 6.7 Grants Readwrite
 
-- [ ] `MVP` Aplicar `GRANT CONNECT`.
-- [ ] `MVP` Aplicar `GRANT USAGE, CREATE ON SCHEMA`.
-- [ ] `MVP` Aplicar grants de tabelas.
-- [ ] `MVP` Aplicar grants de sequencias.
-- [ ] `MVP` Aplicar default privileges para tabelas futuras.
-- [ ] `MVP` Aplicar default privileges para sequencias futuras.
-- [ ] `MVP` Criar teste comprovando que readwrite consegue ler e escrever.
+- [x] `MVP` Aplicar `GRANT CONNECT`.
+- [x] `MVP` Aplicar `GRANT USAGE, CREATE ON SCHEMA`.
+- [x] `MVP` Aplicar grants de tabelas.
+- [x] `MVP` Aplicar grants de sequencias.
+- [x] `MVP` Aplicar default privileges para tabelas futuras.
+- [x] `MVP` Aplicar default privileges para sequencias futuras.
+- [x] `MVP` Criar teste comprovando que readwrite consegue ler e escrever.
 
 ## 7. Integracao do Reconciler
 
-- [ ] `MVP` Conectar reconciler ao `SecretStore`.
-- [ ] `MVP` Conectar reconciler ao `DatabaseProvisioner`.
-- [ ] `MVP` Ler admin secret durante reconciliacao.
-- [ ] `MVP` Gerar senha apenas quando necessario.
-- [ ] `MVP` Criar secret da aplicacao apos provisionar usuario.
-- [ ] `MVP` Atualizar `status.users` com `secretArn`.
-- [ ] `MVP` Reaplicar grants em reconciliacoes repetidas.
+- [x] `MVP` Conectar reconciler ao `SecretStore`.
+- [x] `MVP` Conectar reconciler ao `DatabaseProvisioner`.
+- [x] `MVP` Ler admin secret durante reconciliacao.
+- [x] `MVP` Gerar senha apenas quando necessario.
+- [x] `MVP` Criar secret da aplicacao apos provisionar usuario.
+- [x] `MVP` Atualizar `status.users` com `secretArn`.
+- [x] `MVP` Reaplicar grants em reconciliacoes repetidas.
 - [ ] `MVP` Reconciliar com backoff quando AWS falhar.
 - [ ] `MVP` Reconciliar com backoff quando banco falhar.
 - [ ] `MVP` Criar teste de caminho feliz com fakes.
@@ -322,9 +322,9 @@ Legenda:
 - [x] `MVP` Criar script de bootstrap do admin secret no LocalStack.
 - [ ] `MVP` Criar script para aplicar CRDs e samples no ambiente E2E.
 - [x] `MVP` Rodar operator localmente contra PostgreSQL e LocalStack.
-- [ ] `MVP` Validar criacao do database no PostgreSQL.
+- [x] `MVP` Validar criacao do database no PostgreSQL.
 - [x] `MVP` Validar criacao dos usuarios no PostgreSQL.
-- [ ] `MVP` Validar grants readonly e readwrite no PostgreSQL.
+- [x] `MVP` Validar grants readonly e readwrite no PostgreSQL.
 - [x] `MVP` Validar criacao dos secrets de aplicacao no LocalStack.
 - [x] `MVP` Criar comando unico para executar E2E local.
 - [ ] `Later` Criar teste com kind.
