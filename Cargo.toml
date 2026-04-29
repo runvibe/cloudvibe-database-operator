@@ -8,6 +8,7 @@ repository = "https://github.com/cloudvibedev/cloudvibe-database-operator"
 
 [dependencies]
 aws-config = "1.8.16"
+aws-credential-types = "1.2.14"
 aws-sdk-secretsmanager = "1.104.0"
 axum = "0.8.9"
 chrono = { version = "0.4.44", default-features = false, features = ["clock", "serde"] }

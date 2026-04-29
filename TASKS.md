@@ -321,12 +321,12 @@ Legenda:
 - [x] `MVP` Configurar variaveis AWS locais para apontar SDK para LocalStack.
 - [x] `MVP` Criar script de bootstrap do admin secret no LocalStack.
 - [ ] `MVP` Criar script para aplicar CRDs e samples no ambiente E2E.
-- [ ] `MVP` Rodar operator localmente contra PostgreSQL e LocalStack.
+- [x] `MVP` Rodar operator localmente contra PostgreSQL e LocalStack.
 - [ ] `MVP` Validar criacao do database no PostgreSQL.
-- [ ] `MVP` Validar criacao dos usuarios no PostgreSQL.
+- [x] `MVP` Validar criacao dos usuarios no PostgreSQL.
 - [ ] `MVP` Validar grants readonly e readwrite no PostgreSQL.
-- [ ] `MVP` Validar criacao dos secrets de aplicacao no LocalStack.
-- [ ] `MVP` Criar comando unico para executar E2E local.
+- [x] `MVP` Validar criacao dos secrets de aplicacao no LocalStack.
+- [x] `MVP` Criar comando unico para executar E2E local.
 - [ ] `Later` Criar teste com kind.
 - [ ] `Later` Instalar operator no kind.
 - [ ] `Later` Aplicar CRDs reais dentro do kind.

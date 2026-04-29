@@ -52,12 +52,9 @@ impl PostgresProvisioner {
     async fn create_roles(&self, request: &ProvisionRequest) -> Result<(), ProvisionError> {
         for user in &request.users {
             let role = quote_identifier(&user.name)?;
-            let sql = format!("CREATE ROLE {role} LOGIN PASSWORD $1");
-            match self
-                .admin_pool
-                .execute(sqlx::query(&sql).bind(&user.password))
-                .await
-            {
+            let password = quote_literal(&user.password);
+            let sql = format!("CREATE ROLE {role} LOGIN PASSWORD {password}");
+            match self.admin_pool.execute(sql.as_str()).await {
                 Ok(_) => {}
                 Err(sqlx::Error::Database(err)) if err.code().as_deref() == Some("42710") => {}
                 Err(err) => return Err(err.into()),
@@ -79,4 +76,19 @@ pub fn app_secret_uri(
 
 pub fn jdbc_url(host: &str, port: u16, database: &str) -> String {
     format!("jdbc:postgresql://{host}:{port}/{database}")
+}
+
+fn quote_literal(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "''"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn quotes_password_literals() {
+        assert_eq!(quote_literal("abc"), "'abc'");
+        assert_eq!(quote_literal("a'b"), "'a''b'");
+    }
 }

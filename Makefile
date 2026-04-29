@@ -1,4 +1,4 @@
-.PHONY: fmt clippy test build crds e2e-up e2e-down
+.PHONY: fmt clippy test build crds e2e e2e-up e2e-down
 
 fmt:
 	cargo fmt --all
@@ -14,6 +14,9 @@ build:
 
 crds:
 	cargo run -- export-crds > deploy/crds/database.cloudvibe.dev.yaml
+
+e2e:
+	scripts/e2e.sh
 
 e2e-up:
 	docker compose -f docker-compose.e2e.yaml up --build

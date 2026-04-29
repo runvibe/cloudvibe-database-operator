@@ -27,6 +27,12 @@ docker compose -f docker-compose.e2e.yaml up -d postgres localstack
 scripts/e2e-bootstrap-localstack.sh
 ```
 
+Run the full local E2E test:
+
+```sh
+make e2e
+```
+
 ## HTTP Endpoints
 
 - `GET /healthz`

@@ -20,6 +20,7 @@ Versions were checked with `cargo info` before being added to `Cargo.toml`.
 | `tower-http` | `0.6.8` | Latest stable reported by `cargo info`. |
 | `sqlx` | `0.8.6` | Latest stable; `0.9.0-alpha.1` was intentionally skipped. |
 | `aws-config` | `1.8.16` | Latest stable reported by `cargo info`. |
+| `aws-credential-types` | `1.2.14` | Latest stable reported by `cargo info`. |
 | `aws-sdk-secretsmanager` | `1.104.0` | Latest stable reported by `cargo info`. |
 | `rand` | `0.10.1` | Latest stable reported by `cargo info`. |
 | `regex` | `1.12.3` | Latest stable reported by `cargo info`. |

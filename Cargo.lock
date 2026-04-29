@@ -689,6 +689,7 @@ name = "cloudvibe-database-operator"
 version = "0.1.0"
 dependencies = [
  "aws-config",
+ "aws-credential-types",
  "aws-sdk-secretsmanager",
  "axum",
  "chrono",
