@@ -38,3 +38,7 @@ make e2e
 - `GET /healthz`
 - `GET /readyz`
 - `GET /metrics`
+
+## Installation
+
+- [EKS installation guide](docs/eks-install.md)

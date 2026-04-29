@@ -270,19 +270,19 @@ Legenda:
 
 ## 11. AWS/IAM
 
-- [ ] `MVP` Documentar IAM minimo do operator.
-- [ ] `MVP` Criar exemplo de policy para Secrets Manager.
-- [ ] `MVP` Criar exemplo de trust policy para EKS IRSA.
-- [ ] `MVP` Criar exemplo de ServiceAccount anotado.
+- [x] `MVP` Documentar IAM minimo do operator.
+- [x] `MVP` Criar exemplo de policy para Secrets Manager.
+- [x] `MVP` Criar exemplo de trust policy para EKS IRSA.
+- [x] `MVP` Criar exemplo de ServiceAccount anotado.
 - [ ] `Later` Criar modulo Terraform para IAM.
 - [ ] `Later` Criar exemplo para EKS Pod Identity.
 
 ## 12. External Secrets Operator
 
-- [ ] `MVP` Documentar como consumir o secret criado via External Secrets Operator.
-- [ ] `MVP` Criar exemplo de `ClusterSecretStore`.
-- [ ] `MVP` Criar exemplo de `ExternalSecret`.
-- [ ] `MVP` Criar exemplo de Deployment consumindo env vars.
+- [x] `MVP` Documentar como consumir o secret criado via External Secrets Operator.
+- [x] `MVP` Criar exemplo de `ClusterSecretStore`.
+- [x] `MVP` Criar exemplo de `ExternalSecret`.
+- [x] `MVP` Criar exemplo de Deployment consumindo env vars.
 - [ ] `Later` Adicionar opcao para o operator criar `ExternalSecret` automaticamente.
 
 ## 13. Testes
@@ -348,13 +348,13 @@ Legenda:
 
 - [ ] `MVP` Atualizar README com descricao do projeto.
 - [ ] `MVP` Documentar arquitetura.
-- [ ] `MVP` Documentar instalacao via Helm.
-- [ ] `MVP` Documentar criacao de `DatabaseInstance`.
-- [ ] `MVP` Documentar criacao de `DatabaseAccess`.
-- [ ] `MVP` Documentar formato do admin secret.
-- [ ] `MVP` Documentar formato do app secret.
+- [x] `MVP` Documentar instalacao via Helm.
+- [x] `MVP` Documentar criacao de `DatabaseInstance`.
+- [x] `MVP` Documentar criacao de `DatabaseAccess`.
+- [x] `MVP` Documentar formato do admin secret.
+- [x] `MVP` Documentar formato do app secret.
 - [ ] `MVP` Documentar permissoes `readonly` e `readwrite`.
-- [ ] `MVP` Documentar troubleshooting.
+- [x] `MVP` Documentar troubleshooting.
 - [ ] `Later` Criar pagina de comparacao com Vault e RDS IAM Auth.
 - [ ] `Later` Criar guia para GitOps com Argo CD.
 
