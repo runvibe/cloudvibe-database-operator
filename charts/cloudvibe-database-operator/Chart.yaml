@@ -2,5 +2,5 @@ apiVersion: v2
 name: cloudvibe-database-operator
 description: CloudVibe operator for Aurora PostgreSQL database access provisioning
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "0.1.0"
