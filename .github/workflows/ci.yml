@@ -16,7 +16,7 @@ jobs:
       - run: cargo fmt --all --check
       - run: cargo clippy --all-targets --all-features -- -D warnings
       - run: cargo test --all-features
-      - run: cargo run -- export-crds > /tmp/database.cloudvibe.dev.yaml
-      - run: diff -u deploy/crds/database.cloudvibe.dev.yaml /tmp/database.cloudvibe.dev.yaml
+      - run: cargo run -- export-crds > /tmp/database.runvibe.dev.yaml
+      - run: diff -u deploy/crds/database.runvibe.dev.yaml /tmp/database.runvibe.dev.yaml
       - run: helm version
       - run: helm lint charts/cloudvibe-database-operator
