@@ -7,7 +7,7 @@ Criar um Kubernetes Operator para provisionar databases, usuarios, permissoes e 
 O operador deve permitir que um time de aplicacao declare algo como:
 
 ```yaml
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseAccess
 metadata:
   name: orders-db
@@ -42,7 +42,7 @@ O objetivo principal e manter a aplicacao simples: ela nao precisa saber criar u
 
 - Nome de mercado: CloudVibe Database Operator
 - Nome do repositorio: `cloudvibe-database-operator`
-- API group: `database.cloudvibe.dev`
+- API group: `database.runvibe.dev`
 - Primeira versao da API: `v1alpha1`
 
 ## Principios
@@ -103,7 +103,7 @@ Recurso administrado pelo time de plataforma. Representa uma instancia de banco 
 Exemplo:
 
 ```yaml
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseInstance
 metadata:
   name: prod-main-postgres
@@ -146,7 +146,7 @@ Recurso criado pelo time da aplicacao. Representa o desejo de ter database e usu
 Exemplo:
 
 ```yaml
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseAccess
 metadata:
   name: orders-db
@@ -401,7 +401,7 @@ Opcoes futuras:
 ```yaml
 metadata:
   annotations:
-    database.cloudvibe.dev/rotate-at: "2026-04-28T10:00:00Z"
+    database.runvibe.dev/rotate-at: "2026-04-28T10:00:00Z"
 ```
 
 Fluxo de rotacao:

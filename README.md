@@ -17,7 +17,7 @@ Helm packaging, and LocalStack/PostgreSQL E2E scaffolding.
 cargo fmt --all
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --all-features
-cargo run -- export-crds > deploy/crds/database.cloudvibe.dev.yaml
+cargo run -- export-crds > deploy/crds/database.runvibe.dev.yaml
 ```
 
 ## Local E2E Services

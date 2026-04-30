@@ -151,13 +151,13 @@ When using Pod Identity, the Helm service account annotation is not required.
 Install the CRDs before installing the Helm chart:
 
 ```sh
-kubectl apply -f deploy/crds/database.cloudvibe.dev.yaml
+kubectl apply -f deploy/crds/database.runvibe.dev.yaml
 ```
 
 Verify:
 
 ```sh
-kubectl get crd | grep database.cloudvibe.dev
+kubectl get crd | grep database.runvibe.dev
 ```
 
 ## 5. Install The Operator With Helm
@@ -202,7 +202,7 @@ kubectl -n cloudvibe-system logs deploy/cloudvibe-database-operator
 use.
 
 ```yaml
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseInstance
 metadata:
   name: prod-main-postgres
@@ -233,7 +233,7 @@ namespace as the `DatabaseAccess` resources that reference it.
 `DatabaseAccess` declares the database, schemas and application users.
 
 ```yaml
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseAccess
 metadata:
   name: orders-db

@@ -9,10 +9,10 @@ kind: ClusterRole
 metadata:
   name: cloudvibe-database-operator
 rules:
-  - apiGroups: ["database.cloudvibe.dev"]
+  - apiGroups: ["database.runvibe.dev"]
     resources: ["databaseinstances", "databaseaccesses"]
     verbs: ["get", "list", "watch"]
-  - apiGroups: ["database.cloudvibe.dev"]
+  - apiGroups: ["database.runvibe.dev"]
     resources: ["databaseaccesses/status", "databaseinstances/status"]
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]

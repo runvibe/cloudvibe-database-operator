@@ -23,7 +23,7 @@ pub struct LocalObjectReference {
 
 #[derive(Clone, CustomResource, Debug, Deserialize, JsonSchema, PartialEq, Serialize)]
 #[kube(
-    group = "database.cloudvibe.dev",
+    group = "database.runvibe.dev",
     version = "v1alpha1",
     kind = "DatabaseInstance",
     plural = "databaseinstances",
@@ -56,7 +56,7 @@ pub struct DatabaseInstanceStatus {
 
 #[derive(Clone, CustomResource, Debug, Deserialize, JsonSchema, PartialEq, Serialize)]
 #[kube(
-    group = "database.cloudvibe.dev",
+    group = "database.runvibe.dev",
     version = "v1alpha1",
     kind = "DatabaseAccess",
     plural = "databaseaccesses",

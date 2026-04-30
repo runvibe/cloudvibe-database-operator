@@ -13,7 +13,7 @@ build:
 	cargo build --all-features
 
 crds:
-	cargo run -- export-crds > deploy/crds/database.cloudvibe.dev.yaml
+	cargo run -- export-crds > deploy/crds/database.runvibe.dev.yaml
 
 e2e:
 	scripts/e2e.sh

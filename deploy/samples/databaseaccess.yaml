@@ -1,4 +1,4 @@
-apiVersion: database.cloudvibe.dev/v1alpha1
+apiVersion: database.runvibe.dev/v1alpha1
 kind: DatabaseAccess
 metadata:
   name: orders-db

@@ -4,7 +4,7 @@
 
 Estas instrucoes valem para todo o repositorio `cloudvibe-database-operator`.
 
-O projeto e um Kubernetes Operator para provisionar databases, usuarios, grants e secrets de aplicacoes em Aurora PostgreSQL usando CRDs do grupo `database.cloudvibe.dev`.
+O projeto e um Kubernetes Operator para provisionar databases, usuarios, grants e secrets de aplicacoes em Aurora PostgreSQL usando CRDs do grupo `database.runvibe.dev`.
 
 ## Limite maximo de linhas por arquivo
 
