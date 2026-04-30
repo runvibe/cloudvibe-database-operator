@@ -15,7 +15,7 @@ Aurora PostgreSQL and AWS Secrets Manager.
 The operator image is published to GHCR:
 
 ```sh
-ghcr.io/cloudvibedev/cloudvibe-database-operator:latest
+ghcr.io/runvibe/cloudvibe-database-operator:latest
 ```
 
 For production, prefer a commit SHA tag instead of `latest`.
@@ -174,7 +174,7 @@ Install with IRSA:
 helm upgrade --install cloudvibe-database-operator \
   charts/cloudvibe-database-operator \
   --namespace cloudvibe-system \
-  --set image.repository=ghcr.io/cloudvibedev/cloudvibe-database-operator \
+  --set image.repository=ghcr.io/runvibe/cloudvibe-database-operator \
   --set image.tag=latest \
   --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=arn:aws:iam::123456789012:role/cloudvibe-database-operator
 ```
@@ -185,7 +185,7 @@ Install with EKS Pod Identity:
 helm upgrade --install cloudvibe-database-operator \
   charts/cloudvibe-database-operator \
   --namespace cloudvibe-system \
-  --set image.repository=ghcr.io/cloudvibedev/cloudvibe-database-operator \
+  --set image.repository=ghcr.io/runvibe/cloudvibe-database-operator \
   --set image.tag=latest
 ```
 

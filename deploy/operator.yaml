@@ -16,7 +16,8 @@ spec:
       serviceAccountName: cloudvibe-database-operator
       containers:
         - name: manager
-          image: ghcr.io/cloudvibedev/cloudvibe-database-operator:latest
+          image: ghcr.io/runvibe/cloudvibe-database-operator:latest
+          imagePullPolicy: Always
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
