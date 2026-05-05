@@ -15,6 +15,10 @@ spec:
         {{- include "cloudvibe-database-operator.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "cloudvibe-database-operator.name" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: manager
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
