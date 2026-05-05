@@ -76,8 +76,11 @@ impl SecretsManagerStore {
         {
             Ok(output) => output,
             Err(err) => {
+                let is_not_found = err
+                    .as_service_error()
+                    .is_some_and(|service_error| service_error.is_resource_not_found_exception());
                 let message = err.to_string();
-                if message.contains("ResourceNotFoundException") {
+                if is_not_found || message.contains("ResourceNotFoundException") {
                     return Ok(None);
                 }
                 return Err(SecretStoreError::Aws(message));
