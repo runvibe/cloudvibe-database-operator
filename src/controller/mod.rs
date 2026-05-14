@@ -1,5 +1,5 @@
 use crate::api::v1alpha1::{
-    Condition, DatabaseAccess, DatabaseAccessStatus, DatabaseAccessUserStatus, DatabaseEngine,
+    DatabaseAccess, DatabaseAccessStatus, DatabaseAccessUserStatus, DatabaseEngine,
     DatabaseInstance,
 };
 use crate::aws::secretsmanager::{AppSecret, SecretStoreError, SecretsManagerStore};
@@ -11,7 +11,6 @@ use crate::naming::{self, NamingError};
 use crate::password;
 use aws_config::BehaviorVersion;
 use aws_sdk_secretsmanager::config::Region;
-use chrono::Utc;
 use futures::StreamExt;
 use kube::{
     Api, Client, ResourceExt,
@@ -22,6 +21,8 @@ use sqlx::postgres::PgSslMode;
 use std::{sync::Arc, time::Duration};
 use thiserror::Error;
 use tracing::{error, info, instrument};
+
+mod status;
 
 #[derive(Clone)]
 pub struct Context {
@@ -71,16 +72,16 @@ async fn reconcile(
                 Ok(status) => status,
                 Err(err) => {
                     error!(error = %err, "database access provisioning failed");
-                    provisioning_error_status(&access, &err)
+                    status::provisioning_error_status(&access, &err)
                 }
             }
         }
-        Ok(_) => error_status(
+        Ok(_) => status::error_status(
             &access,
             "NamespaceDenied",
             "namespace is not allowed for instance",
         ),
-        Err(kube::Error::Api(err)) if err.code == 404 => error_status(
+        Err(kube::Error::Api(err)) if err.code == 404 => status::error_status(
             &access,
             "InstanceNotFound",
             "referenced DatabaseInstance was not found",
@@ -88,14 +89,17 @@ async fn reconcile(
         Err(err) => return Err(err.into()),
     };
 
-    let accesses: Api<DatabaseAccess> = Api::namespaced(ctx.client.clone(), &namespace);
-    accesses
-        .patch_status(
-            &access.name_any(),
-            &PatchParams::apply("cloudvibe-database-operator"),
-            &Patch::Merge(serde_json::json!({ "status": status })),
-        )
-        .await?;
+    if status::needs_patch(access.status.as_ref(), &status) {
+        let accesses: Api<DatabaseAccess> = Api::namespaced(ctx.client.clone(), &namespace);
+        accesses
+            .patch_status(
+                &access.name_any(),
+                &PatchParams::apply("cloudvibe-database-operator"),
+                &Patch::Merge(serde_json::json!({ "status": status })),
+            )
+            .await?;
+    }
+
     Ok(Action::requeue(Duration::from_secs(300)))
 }
 
@@ -200,7 +204,7 @@ async fn provision_access(
         }
     }
 
-    Ok(ready_status(access, status_users))
+    Ok(status::ready_status(access, status_users))
 }
 
 async fn secret_store(region: &str) -> SecretsManagerStore {
@@ -218,63 +222,6 @@ fn namespace_allowed(instance: &DatabaseInstance, namespace: &str) -> bool {
             .allowed_namespaces
             .iter()
             .any(|allowed| allowed == namespace)
-}
-
-fn ready_status(
-    access: &DatabaseAccess,
-    users: Vec<DatabaseAccessUserStatus>,
-) -> DatabaseAccessStatus {
-    DatabaseAccessStatus {
-        observed_generation: access.metadata.generation,
-        phase: Some("Ready".to_string()),
-        database: Some(access.spec.database.clone()),
-        users,
-        conditions: vec![condition(
-            "Ready",
-            "True",
-            "Provisioned",
-            "database access is ready",
-        )],
-    }
-}
-
-fn error_status(access: &DatabaseAccess, reason: &str, message: &str) -> DatabaseAccessStatus {
-    DatabaseAccessStatus {
-        observed_generation: access.metadata.generation,
-        phase: Some("Error".to_string()),
-        database: Some(access.spec.database.clone()),
-        users: Vec::new(),
-        conditions: vec![condition("Ready", "False", reason, message)],
-    }
-}
-
-fn provisioning_error_status(
-    access: &DatabaseAccess,
-    err: &ReconcileError,
-) -> DatabaseAccessStatus {
-    let (reason, message) = match err {
-        ReconcileError::SecretStore(_) => (
-            "SecretStoreError",
-            "failed to read or write AWS Secrets Manager secret",
-        ),
-        ReconcileError::Provision(_) => (
-            "ProvisioningError",
-            "failed to provision database resources",
-        ),
-        ReconcileError::Naming(_) => ("InvalidName", "database access contains an invalid name"),
-        ReconcileError::Kube(_) => ("KubernetesError", "failed to call the Kubernetes API"),
-    };
-    error_status(access, reason, message)
-}
-
-fn condition(type_: &str, status: &str, reason: &str, message: &str) -> Condition {
-    Condition {
-        type_: type_.to_string(),
-        status: status.to_string(),
-        reason: reason.to_string(),
-        message: message.to_string(),
-        last_transition_time: Utc::now(),
-    }
 }
 
 fn error_policy(_object: Arc<DatabaseAccess>, _err: &ReconcileError, _ctx: Arc<Context>) -> Action {
